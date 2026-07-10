@@ -4,4 +4,11 @@
     <string name="status_connected">Connected</string>
     <string name="status_disconnected">Disconnected</string>
     <string name="status_permission_denied">Permission Denied</string>
+    <string-array name="demod_modes">
+        <item>AM</item>
+        <item>FM</item>
+        <item>LSB</item>
+        <item>USB</item>
+        <item>CW</item>
+    </string-array>
 </resources>

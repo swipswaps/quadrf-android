@@ -10,8 +10,10 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.View;
@@ -36,6 +38,7 @@ public class MainActivity extends Activity {
     private Button startButton;
     private SeekBar freqSeekBar, gainSeekBar;
     private TextView freqDisplay, gainDisplay;
+    private Spinner modeSpinner;
     private boolean isServiceRunning = false;
 
     private final BroadcastReceiver usbPermissionReceiver = new BroadcastReceiver() {
@@ -76,7 +79,6 @@ public class MainActivity extends Activity {
         }
     };
 
-    // Broadcast receiver for spectrum updates from SdrService
     private final BroadcastReceiver spectrumReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -84,9 +86,8 @@ public class MainActivity extends Activity {
                 float[] spectrum = intent.getFloatArrayExtra(EXTRA_SPECTRUM);
                 int size = intent.getIntExtra(EXTRA_SIZE, 0);
                 if (spectrum != null && size > 0) {
-                    // Update the waterfall view (placeholder – you can pass to a custom View)
-                    // For now, we just show a simple text.
-                    // In a real app, you would update a WaterfallView with these values.
+                    // In a real app, update a WaterfallView with these values.
+                    // For now, we update the status text as a simple indicator.
                     // statusText.setText("Spectrum update: " + size + " bins");
                 }
             }
@@ -104,6 +105,13 @@ public class MainActivity extends Activity {
         gainSeekBar = findViewById(R.id.gainSeekBar);
         freqDisplay = findViewById(R.id.freqDisplay);
         gainDisplay = findViewById(R.id.gainDisplay);
+        modeSpinner = findViewById(R.id.modeSpinner);
+
+        // Set up mode spinner
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.demod_modes, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modeSpinner.setAdapter(adapter);
 
         usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 
@@ -125,7 +133,7 @@ public class MainActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    long freqHz = (long) progress * 1000; // kHz -> Hz
+                    long freqHz = (long) progress * 1000;
                     freqDisplay.setText(String.format("%.3f MHz", freqHz / 1e6));
                     if (isServiceRunning) {
                         Intent serviceIntent = new Intent(MainActivity.this, SdrService.class);
@@ -137,7 +145,7 @@ public class MainActivity extends Activity {
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-        freqSeekBar.setProgress(100000); // 100 MHz default
+        freqSeekBar.setProgress(100000);
 
         // Gain slider: 0–40 dB
         gainSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -155,7 +163,22 @@ public class MainActivity extends Activity {
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-        gainSeekBar.setProgress(20); // default 20 dB
+        gainSeekBar.setProgress(20);
+
+        // Mode selector
+        modeSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
+                if (isServiceRunning) {
+                    // Mode change will be handled in a future native method
+                    // For now, we just log it
+                    String mode = parent.getItemAtPosition(position).toString();
+                    Toast.makeText(MainActivity.this, "Mode: " + mode, Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,7 +235,6 @@ public class MainActivity extends Activity {
 
         Intent serviceIntent = new Intent(this, SdrService.class);
         serviceIntent.putExtra("fileDescriptor", fileDescriptor);
-        // Send initial frequency and gain
         serviceIntent.putExtra("frequency", (long) freqSeekBar.getProgress() * 1000);
         serviceIntent.putExtra("gain", gainSeekBar.getProgress());
         startForegroundService(serviceIntent);

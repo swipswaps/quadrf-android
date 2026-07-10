@@ -15,6 +15,18 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+/*
+ * Verbatim citation from Android documentation:
+ * "A Service is an application component that can perform long-running operations
+ * in the background and does not provide a user interface."
+ * Source: developer.android.com/guide/components/services
+ *
+ * Verbatim citation from AudioTrack documentation:
+ * "The AudioTrack class manages and plays a single audio resource for Java
+ * applications. It allows streaming of PCM audio buffers to the audio sink for
+ * playback."
+ * Source: developer.android.com/reference/android/media/AudioTrack
+ */
 public class SdrService extends Service implements JniCallback {
     private static final String TAG = "SdrService";
     private static final String CHANNEL_ID = "SdrServiceChannel";
@@ -51,25 +63,27 @@ public class SdrService extends Service implements JniCallback {
                 AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
         audioBufferSize = Math.max(minBufferSize * 2, 4096);
+
         AudioAttributes attrs = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build();
+
         AudioFormat format = new AudioFormat.Builder()
                 .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
                 .setSampleRate(sampleRate)
                 .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                 .build();
+
         audioTrack = new AudioTrack(attrs, format, audioBufferSize,
                 AudioTrack.MODE_STREAM, AudioTrack.AUDIO_SESSION_ID_GENERATE);
         audioTrack.play();
-        Log.i(TAG, "AudioTrack initialised");
+        Log.i(TAG, "AudioTrack initialised, buffer size=" + audioBufferSize);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            // Handle control intents for frequency/gain changes
             if (intent.hasExtra("frequency")) {
                 long freq = intent.getLongExtra("frequency", 100000000L);
                 setFrequencyNative(freq);
@@ -120,6 +134,7 @@ public class SdrService extends Service implements JniCallback {
 
     @Override
     public void onAudioSamples(final short[] samples, final int count) {
+        // Write audio samples directly to AudioTrack
         if (audioTrack != null && audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
             audioTrack.write(samples, 0, count);
         }
@@ -146,7 +161,9 @@ public class SdrService extends Service implements JniCallback {
                     NotificationManager.IMPORTANCE_LOW
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) manager.createNotificationChannel(channel);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
         }
     }
 
