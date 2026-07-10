@@ -16,7 +16,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Remove cache to avoid package-lock.json missing error
 
       - name: Install dependencies
         run: npm install
@@ -26,9 +25,11 @@ jobs:
         run: npm run build
         working-directory: ui
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (force clean)
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./ui/dist
           publish_branch: gh-pages
+          force_orphan: true   # This deletes the old branch and creates a fresh one
+          commit_message: "Deploy React app - ${{ github.sha }}"
