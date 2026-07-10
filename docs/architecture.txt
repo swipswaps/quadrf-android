@@ -1,0 +1,37 @@
+Architecture Diagram (Text Representation)
+
++------------------+                    +-----------------------+
+|  Android Phone   |   USB-C (Host)     |  Quad RF Frontend     |
+| (Termux / App)   |===================>| (4x Transmitters)     |
+|  [GNU Radio]     |   Power & Data     | (4x Receivers)        |
++------------------+                    +-----------------------+
+
+Detailed Component Diagram:
+
++-----------------------------------------------------------+
+|                    Android Application                     |
+|  +------------------+    +-----------------------------+   |
+|  |   MainActivity   |    |      SdrService            |   |
+|  |  (UI, Permission)|    | (Background Processing)    |   |
+|  +--------+---------+    +-------------+--------------+   |
+|           |                             |                  |
+|           | UsbManager                  | JNI              |
+|           v                             v                  |
+|  +------------------+    +-----------------------------+   |
+|  | UsbDeviceConnection|   |   Native Library            |   |
+|  | getFileDescriptor()|   | (libquadrf_sdr_jni.so)     |   |
+|  +--------+---------+    +-------------+--------------+   |
+|           |                             |                  |
+|           +-------------+---------------+                  |
+|                         v                                  |
+|                +------------------+                        |
+|                |   Linux Kernel   |                        |
+|                | /dev/bus/usb/*   |                        |
+|                +------------------+                        |
++-----------------------------------------------------------+
+                         |
+                         v
+                +------------------+
+                |   Quad RF Board  |
+                |  (USB Peripheral)|
+                +------------------+

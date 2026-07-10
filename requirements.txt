@@ -1,0 +1,9 @@
+# Termux Package Prerequisites (install via pkg install):
+# pkg install python libusb fftw cmake clang git
+#
+# Python packages (install in a virtualenv)
+numpy==1.26.4
+scipy==1.12.0
+pyusb==1.2.1
+matplotlib==3.8.3
+# Note: gnuradio is not a pip package; it must be built from source for Android.

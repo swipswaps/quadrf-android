@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Quad RF not connected"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start SDR"
+        android:enabled="false"
+        android:layout_marginTop="16dp" />
+
+    <!-- Frequency control -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Freq: " />
+        <SeekBar
+            android:id="@+id/freqSeekBar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:max="10000" />
+        <TextView
+            android:id="@+id/freqDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100.000 MHz" />
+    </LinearLayout>
+
+    <!-- Gain control -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gain: " />
+        <SeekBar
+            android:id="@+id/gainSeekBar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:max="40" />
+        <TextView
+            android:id="@+id/gainDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 dB" />
+    </LinearLayout>
+
+    <!-- Waterfall preview (placeholder) -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Waterfall (spectrum data will appear here)"
+        android:gravity="center"
+        android:layout_marginTop="16dp" />
+</LinearLayout>
