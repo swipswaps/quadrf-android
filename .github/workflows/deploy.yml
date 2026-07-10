@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: write   # Required to push to gh-pages
+  pages: write      # For GitHub Pages (optional)
+  id-token: write   # For OIDC (optional)
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -25,11 +30,11 @@ jobs:
         run: npm run build
         working-directory: ui
 
-      - name: Deploy to GitHub Pages (force clean)
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./ui/dist
           publish_branch: gh-pages
-          force_orphan: true   # This deletes the old branch and creates a fresh one
+          force_orphan: true
           commit_message: "Deploy React app - ${{ github.sha }}"
