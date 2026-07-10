@@ -1,0 +1,73 @@
+/* Minimal styling – markdown body is styled by GitHub's CSS via highlight.js */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: #f6f8fa;
+  color: #24292f;
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  background: white;
+  min-height: 100vh;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+header {
+  text-align: center;
+  padding-bottom: 0.5rem;
+}
+header h1 {
+  margin-bottom: 0.2rem;
+  font-size: 2.2rem;
+}
+header p {
+  color: #57606a;
+  margin-top: 0.2rem;
+}
+hr {
+  border: 0;
+  border-top: 1px solid #d0d7de;
+  margin: 1rem 0;
+}
+.markdown-body {
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+.markdown-body h1, .markdown-body h2 {
+  border-bottom: 1px solid #d0d7de;
+  padding-bottom: 0.3rem;
+}
+.markdown-body pre {
+  background: #0d1117;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+.markdown-body code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+.error {
+  color: #cf222e;
+  padding: 2rem;
+  text-align: center;
+}
+footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #57606a;
+  border-top: 1px solid #d0d7de;
+  padding-top: 1rem;
+}
+footer a {
+  color: #0969da;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}

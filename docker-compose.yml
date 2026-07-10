@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  api:
+    build: ./api
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+    restart: unless-stopped
+  # React frontend can be served separately via Vite dev server
+  # or by a static web server; for local dev you can also add a frontend service
